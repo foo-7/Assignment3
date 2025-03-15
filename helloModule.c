@@ -12,7 +12,6 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     pmd_t *pmd;
     pte_t *pte;
     struct page *page;
-    unsigned long ppage = 0;
     pgd = pgd_offset(mm, vpage);
     if (pgd_none(*pgd) || pgd_bad(*pgd)) {
         return 0;
@@ -60,14 +59,17 @@ void page_tables(struct task_struct *task) {
     //     }
     // }
 
-    // Fixed
-    if (task->mm) {
-        for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
-            for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
-                unsigned long physical_page_addr = virt2phys(task->mm, vpage);
-            }
-        }
-    }
+    /**
+        Might run, but check if u can have kernel ver 5 run above.
+        (ERRORS EXIST HERE TOO FOR THE MAPPING)
+    */
+    // if (task->mm) {
+    //     for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
+    //         for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
+    //             unsigned long physical_page_addr = virt2phys(task->mm, vpage);
+    //         }
+    //     }
+    // }
 }
 
 int proc_count(void) {
