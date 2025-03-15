@@ -35,7 +35,7 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     if (!(page = pte_page(*pte))) {
         return 0;
     }
-    physical_page_addr = page_to_phys(page);
+    unsigned long physical_page_addr = page_to_phys(page);
     pte_unmap(pte);
     if (physical_page_addr == 70368744173568) {
         return 0;
@@ -46,7 +46,22 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
 void page_tables(struct task_struct *task) {
     struct vm_area_struct *vma = 0;
     unsigned long vpage;
-    if (task->mm && task->mm->mmap) {
+
+    /** 
+            ?? ERROR ??
+            mm has no mmap attribute
+                -> It is unmmapped.
+    */
+    // if (task->mm && task->mm->mmap) {
+    //     for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
+    //         for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
+    //             unsigned long physical_page_addr = virt2phys(task->mm, vpage);
+    //         }
+    //     }
+    // }
+
+    // Fixed
+    if (task->mm) {
         for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
             for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
                 unsigned long physical_page_addr = virt2phys(task->mm, vpage);
