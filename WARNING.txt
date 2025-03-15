@@ -1,0 +1,36 @@
+Kernel modules will FAIL TO COMPILE if source code is placed under paths with spaces.
+In general spaces in filenames is a Windows/MAC convention and is uncommon on Linux.
+Please do not use spaces in directory of filenames like "home/Page Table Walk/hello_module/"
+
+
+If not compatible to GCC, please update to gcc 12.3.0
+
+Ubuntu:
+    sudo apt update
+    sudo apt install gcc-12 g++-12
+
+Check gcc:
+    gcc --version
+
+If it is not using gcc 12.3.0:
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
+
+
+Afterwards, please do this in order:
+    (1) tar xzf hello_module.tar.gz
+        -> this extracts the sample karnel module
+
+    (2) cd hello_module/
+        make
+        -> build sample module
+
+    (3) sudo insmod ./helloModule.ko
+        -> to install a newly built module
+
+    (4) sudo tail -fn 50 /var/log/messages
+        -> the 'dmesg' command provides a command to interface with kernel log messages,
+           but it is simple enough to just trace the output
+
+    (5) sudo rmmod ./helloModule.ko
+        -> to remove a previously installed the module
