@@ -4,7 +4,7 @@
 #include<linux/kernel.h>
 #include<linux/pid_namespace.h>
 #include<asm/io.h>
-#include<linux/mm.h> // this so that we have access to mm_struct and so our functions that need access to mm don't run into errors
+#include<linux/mm.h> // this so that we have access to mm_struct
 
 unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     pgd_t *pgd;
@@ -43,9 +43,11 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     return physical_page_addr;
 }
 
-void page_tables(struct task_struct *task) {
+//changed return value from void so that we can use it in proc_count and display our total pages.
+unsigned long page_tables(struct task_struct *task) {
     struct vm_area_struct *vma = 0;
     unsigned long vpage;
+    unsigned long total_pages = 0; //allocate our pages that need to be displayed
 
     /** 
             ?? ERROR ??
@@ -55,43 +57,37 @@ void page_tables(struct task_struct *task) {
             Bill: we can do just do a check to see if mm is undefined
             That way  we don't need comment out the code
     */
-   // we want to check if our variables are initialzed so we don't run into any unmapped atrributes
-   if (task->mm == NULL || task->mm->mmap == NULL){
-    printf("unmapped values found \n")
-    return; // this means that we've reached unmapped values
+   // we want to check if our variable is initialzed so we don't run into any unmapped atrributes
+   if (task->mm == NULL){
+    printk(KERN_INFO "unmapped values found. \n");
+    return 0; // this means that we've reached unmapped values. and we return 0 since we're returning a long
    }
 
     if (task->mm && task->mm->mmap) {
         for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
             for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
                 unsigned long physical_page_addr = virt2phys(task->mm, vpage);
-            }
+                if (physical_page_addr != 0) { //check to see if the operation worked
+                    total_pages += 1; //update
+                }
+            }   
         }
     }
-
-    /**
-        Might run, but check if u can have kernel ver 5 run above.
-        (ERRORS EXIST HERE TOO FOR THE MAPPING)
-        
-    */
-    // if (task->mm) {
-    //     for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
-    //         for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
-    //             unsigned long physical_page_addr = virt2phys(task->mm, vpage);
-    //         }
-    //     }
-    // }
-
-    //isn't this the exact same?
+    return total_pages; //return our total amount pages
 }
 
 int proc_count(void) {
     int i=0;
     struct task_struct *thechild;
+
+    printk(KERN_INFO "PROCESS REPORT:\n");
+    printk(KERN_INFO "proc_id,proc_name,total_pages\n");
+
     for_each_process(thechild) {
         i++;
         if (thechild->pid > 650) {
-            page_tables(thechild);
+            unsigned long total_pages = page_tables(thechild);
+            printk(KERN_INFO "%d, %s, %lu\n", thechild->pid, thechild->comm, total_pages);
         }
     }
     return i;
