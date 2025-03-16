@@ -4,6 +4,7 @@
 #include<linux/kernel.h>
 #include<linux/pid_namespace.h>
 #include<asm/io.h>
+#include<linux/mm.h> // this so that we have access to mm_struct and so our functions that need access to mm don't run into errors
 
 unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     pgd_t *pgd;
@@ -50,18 +51,28 @@ void page_tables(struct task_struct *task) {
             ?? ERROR ??
             mm has no mmap attribute
                 -> It is unmmapped.
+
+            Bill: we can do just do a check to see if mm is undefined
+            That way  we don't need comment out the code
     */
-    // if (task->mm && task->mm->mmap) {
-    //     for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
-    //         for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
-    //             unsigned long physical_page_addr = virt2phys(task->mm, vpage);
-    //         }
-    //     }
-    // }
+   // we want to check if our variables are initialzed so we don't run into any unmapped atrributes
+   if (task->mm == NULL || task->mm->mmap == NULL){
+    printf("unmapped values found \n")
+    return; // this means that we've reached unmapped values
+   }
+
+    if (task->mm && task->mm->mmap) {
+        for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
+            for (vpage = vma->vm_start; vpage < vma->vm_end; vpage += PAGE_SIZE) {
+                unsigned long physical_page_addr = virt2phys(task->mm, vpage);
+            }
+        }
+    }
 
     /**
         Might run, but check if u can have kernel ver 5 run above.
         (ERRORS EXIST HERE TOO FOR THE MAPPING)
+        
     */
     // if (task->mm) {
     //     for (vma = task->mm->mmap; vma; vma = vma->vm_next) {
@@ -70,6 +81,8 @@ void page_tables(struct task_struct *task) {
     //         }
     //     }
     // }
+
+    //isn't this the exact same?
 }
 
 int proc_count(void) {
@@ -77,7 +90,7 @@ int proc_count(void) {
     struct task_struct *thechild;
     for_each_process(thechild) {
         i++;
-        if (task->pid > 650) {
+        if (thechild->pid > 650) {
             page_tables(thechild);
         }
     }
