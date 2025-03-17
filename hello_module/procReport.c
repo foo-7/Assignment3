@@ -44,20 +44,12 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     return physical_page_addr;
 }
 
-//changed return value from void so that we can use it in proc_count and display our total pages.
+// Will process that kernel task and return the total amount of pages
 unsigned long page_tables(struct task_struct *task) {
     struct vm_area_struct *vma = 0;
     unsigned long vpage;
     unsigned long total_pages = 0; //allocate our pages that need to be displayed
 
-    /** 
-            ?? ERROR ??
-            mm has no mmap attribute
-                -> It is unmmapped.
-
-            Bill: we can do just do a check to see if mm is undefined
-            That way  we don't need comment out the code
-    */
    // we want to check if our variable is initialzed so we don't run into any unmapped atrributes
    if (task->mm == NULL){
     printk(KERN_INFO "unmapped values found. \n");
@@ -77,6 +69,7 @@ unsigned long page_tables(struct task_struct *task) {
     return total_pages; //return our total amount pages
 }
 
+// Counts the amount of procedures and will print the kernel info
 int proc_count(void) {
     int i=0;
     struct task_struct *thechild;
@@ -84,26 +77,29 @@ int proc_count(void) {
     printk(KERN_INFO "PROCESS REPORT:\n");
     printk(KERN_INFO "proc_id,proc_name,total_pages\n");
 
+    // loop through all the processes
     for_each_process(thechild) {
         i++;
         if (thechild->pid > 650) {
-            unsigned long total_pages = page_tables(thechild);
-            printk(KERN_INFO "%d, %s, %lu\n", thechild->pid, thechild->comm, total_pages);
+            unsigned long total_pages = page_tables(thechild); // will run and then grab the total page tables
+            printk(KERN_INFO "%d, %s, %lu\n", thechild->pid, thechild->comm, total_pages); // Display the info
         }
     }
-    return i;
+    return i; // return the total amount of procedures
 }
 
+// Will print that the module is initializing and then run kernel procedure
 int proc_init (void) {
   printk(KERN_INFO "helloModule: kernel module initialized\n");
   printk(KERN_INFO "There are %d running processes. \n", proc_count());
   return 0;
 }
 
+// Will display that the module is cleanning up when calling in module_exit
 void proc_cleanup(void) {
   printk(KERN_INFO "helloModule: performing cleanup of module\n");
 }
 
 MODULE_LICENSE("GPL");
-module_init(proc_init);
-module_exit(proc_cleanup);
+module_init(proc_init); // initialize the kernel procedure
+module_exit(proc_cleanup); //clean up the kernel procedure
