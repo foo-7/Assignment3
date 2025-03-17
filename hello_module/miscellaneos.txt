@@ -1,11 +1,10 @@
 download
 
 cd /tmp
-wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-headers-5.4.228-0504228-generic_5.4.228-0504228.202310130936_amd64.deb
-wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-image-unsigned-5.4.228-0504228-generic_5.4.228-0504228.202310130936_amd64.deb
-wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-modules-5.4.228-0504228-generic_5.4.228-0504228.202310130936_amd64.deb
-wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-headers-5.4.228-0504228_5.4.228-0504228.202310130936_all.deb
-
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.132/amd64/linux-headers-5.15.132-0515132-generic_5.15.132-0515132.202309061032_amd64.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.132/amd64/linux-headers-5.15.132-0515132_5.15.132-0515132.202309061032_all.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.132/amd64/linux-image-unsigned-5.15.132-0515132-generic_5.15.132-0515132.202309061032_amd64.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.132/amd64/linux-modules-5.15.132-0515132-generic_5.15.132-0515132.202309061032_amd64.deb
 ----------------
 
 install
