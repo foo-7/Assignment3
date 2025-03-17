@@ -1,0 +1,20 @@
+download
+
+cd /tmp
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-headers-5.4.228-0504228-generic_5.4.228-0504228.202310130936_amd64.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-image-unsigned-5.4.228-0504228-generic_5.4.228-0504228.202310130936_amd64.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-modules-5.4.228-0504228-generic_5.4.228-0504228.202310130936_amd64.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.228/amd64/linux-headers-5.4.228-0504228_5.4.228-0504228.202310130936_all.deb
+
+----------------
+
+install
+sudo dpkg -i *.deb
+
+if dependecy errors
+sudo apt --fix-broken install
+then rerun
+
+--------------
+
+sudo update-grub
