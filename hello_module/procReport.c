@@ -12,6 +12,7 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     pud_t *pud;
     pmd_t *pmd;
     pte_t *pte;
+    unsigned long physical_page_addr; //added this as it was cassing a warning. ISO C90 forbids mixed declarations and code
     struct page *page;
     pgd = pgd_offset(mm, vpage);
     if (pgd_none(*pgd) || pgd_bad(*pgd)) {
@@ -35,7 +36,7 @@ unsigned long virt2phys(struct mm_struct *mm, unsigned long vpage) {
     if (!(page = pte_page(*pte))) {
         return 0;
     }
-    unsigned long physical_page_addr = page_to_phys(page);
+    physical_page_addr = page_to_phys(page);
     pte_unmap(pte);
     if (physical_page_addr == 70368744173568) {
         return 0;
